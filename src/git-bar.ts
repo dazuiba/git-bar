@@ -8,14 +8,13 @@
  * Notes:
  *   - Multiple --author values are ORed, case-insensitive
  *   - --days N limits to last N days (disables -n LIMIT)
- *   - Columns: date, hash, author, message(10 chars), colored bar, stats (ins+,del-)
+ *   - Columns: date, hash, author, colored bar, stats (ins+,del-)
  */
 import { execSync } from 'node:child_process'
 
 const DATE_WIDTH = 10 // YYYY-MM-DD
 const HASH_WIDTH = 9
 const AUTHOR_WIDTH = 12
-const MESSAGE_WIDTH = 10
 const HARD_BAR_CAP = 120
 const DEFAULT_LIMIT = Number(process.env.GIT_BAR_LIMIT || '30')
 
@@ -174,7 +173,7 @@ const paint = (txt: string, author: string) => {
 
 const termWidth = typeof process.stdout.columns === 'number' ? process.stdout.columns : 80
 const statsLenMax = Math.max(4, ...dailyEntries.map((e) => `${e.insertions}+,${e.deletions}-`.length))
-const baseWidth = DATE_WIDTH + HASH_WIDTH + AUTHOR_WIDTH + MESSAGE_WIDTH + statsLenMax + 5
+const baseWidth = DATE_WIDTH + HASH_WIDTH + AUTHOR_WIDTH + statsLenMax + 4
 const availableForBar = Math.max(1, termWidth - baseWidth)
 const maxBarWidth = Math.max(1, Math.min(availableForBar, HARD_BAR_CAP))
 
@@ -186,15 +185,14 @@ for (const e of dailyEntries) {
   const dateCol = padOrCut(e.date, DATE_WIDTH)
   const hashCol = padOrCut(e.hash, HASH_WIDTH)
   const authorCol = padOrCut(e.author, AUTHOR_WIDTH)
-  const msgCol = padOrCut(e.message.replace(/^\s+/, ''), MESSAGE_WIDTH)
   const stats = `${e.insertions}+,${e.deletions}-`
 
-  const prefixLen = dateCol.length + 1 + hashCol.length + 1 + authorCol.length + 1 + msgCol.length + 1
+  const prefixLen = dateCol.length + 1 + hashCol.length + 1 + authorCol.length + 1
   const lineAvail = Math.max(1, Math.min(HARD_BAR_CAP, termWidth - prefixLen - 1 - stats.length))
   barLen = Math.min(barLen, lineAvail)
   const bar = '█'.repeat(barLen)
 
   console.log(
-    `${dateCol} ${hashCol} ${paint(authorCol, e.author)} ${msgCol} ${paint(bar, e.author)} ${stats}`
+    `${dateCol} ${hashCol} ${paint(authorCol, e.author)} ${paint(bar, e.author)} ${stats}`
   )
 }
