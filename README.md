@@ -1,6 +1,6 @@
 # git-bar
 
-Colorful terminal bars that show daily Git changes per author at a glance.
+bar length reflects commit changes; daily author activity at a glance.
 
 ```bash
 npx git-bar --days 7
@@ -25,13 +25,9 @@ git-bar [--author keyword] [--author keyword2] [--days N]
 ```
 - `--author <keyword>`: filter authors by substring; repeatable; OR logic; case-insensitive.
 - `--days <N>`: show only the last N days; overrides the default fetch limit.
-- Env `GIT_BAR_LIMIT`: max commits fetched when `--days` is not set (default 30).
-
-## Colors
-Colors stay on when stdout is a TTY. They switch off automatically when piped to another command or file.
 
 ## Findability
-Keywords people search for: git calendar, git stats, git activity graph, git contributions chart, git commits per day, git author stats terminal.
+git calendar, git stats, git activity graph, git contributions chart, git commits per day, git author stats terminal.
 
 ## License
 MIT
